@@ -1,41 +1,54 @@
-import React, {Component} from 'react'
-import {Platform, StyleSheet, Text, View} from 'react-native'
+import React from 'react'
+import { StyleSheet, Text, View } from 'react-native'
+import { ApolloClient } from 'apollo-client'
+import { InMemoryCache } from 'apollo-cache-inmemory'
+import { HttpLink } from 'apollo-link-http'
+import { ApolloLink } from 'apollo-link'
+import { ApolloProvider } from 'react-apollo'
+import { withClientState } from 'apollo-link-state'
 
-const instructions = Platform.select({
-  ios: 'Press Cmd+R to reload,\n' + 'Cmd+D or shake for dev menu',
-  android:
-    'Double tap R on your keyboard to reload,\n' +
-    'Shake or press menu button for dev menu',
+const cache = new InMemoryCache()
+
+const stateLink = withClientState({
+  cache,
+  defaults: {
+    testing: {
+      __typename: 'testing',
+      name: '',
+      age: 0
+    }
+  }
 })
 
-type Props = {}
-export default class App extends Component<Props> {
-  render() {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.welcome}>Welcome to React Native!</Text>
-        <Text style={styles.instructions}>To get started, edit App.js</Text>
-        <Text style={styles.instructions}>{instructions}</Text>
+const client = new ApolloClient({
+  cache,
+  link: ApolloLink.from([
+    stateLink,
+    new HttpLink({ uri: 'http://localhost:3333/graphql' })
+  ])
+})
+
+// make client to rewrite the defaults every time the store resets
+client.onResetStore(stateLink.writeDefaults)
+
+export default App = () => {
+  return (
+    <ApolloProvider client={ client }>
+      <View style={ styles.container }>
+        <Text style={ styles.text }>Hi!</Text>
       </View>
-    )
-  }
+    </ApolloProvider>
+  )
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
+    backgroundColor: '#e2e2e2',
   },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
+  text: {
+    backgroundColor: '#555',
+  }
 })

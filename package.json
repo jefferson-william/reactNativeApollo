@@ -1,13 +1,21 @@
 {
-  "name": "ReactNativeApollo",
+  "name": "reactnativeapollo",
   "version": "0.0.1",
   "private": true,
   "scripts": {
+    "clearcache": "watchman watch-del-all ; rm -rf node_modules ; npm install ; npm start -- --reset-cache",
     "start": "node node_modules/react-native/local-cli/cli.js start",
     "test": "jest"
   },
   "dependencies": {
+    "apollo-cache-inmemory": "^1.4.2",
+    "apollo-link": "^1.2.8",
+    "apollo-link-http": "^1.5.11",
+    "apollo-link-state": "^0.4.2",
+    "graphql": "^14.1.1",
+    "graphql-tag": "^2.10.1",
     "react": "16.6.3",
+    "react-apollo": "^2.4.1",
     "react-native": "0.58.4"
   },
   "devDependencies": {
