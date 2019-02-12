@@ -1,11 +1,14 @@
 import React from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import { MY_IP } from 'react-native-dotenv'
+import { Platform, StyleSheet } from 'react-native'
 import { ApolloClient } from 'apollo-client'
 import { InMemoryCache } from 'apollo-cache-inmemory'
 import { HttpLink } from 'apollo-link-http'
 import { ApolloLink } from 'apollo-link'
 import { ApolloProvider } from 'react-apollo'
 import { withClientState } from 'apollo-link-state'
+import Root from './src/pages/Root'
+import Main from './src/pages/Main'
 
 const cache = new InMemoryCache()
 
@@ -24,7 +27,7 @@ const client = new ApolloClient({
   cache,
   link: ApolloLink.from([
     stateLink,
-    new HttpLink({ uri: 'http://localhost:3333/graphql' })
+    new HttpLink({ uri: Platform.OS === 'ios' ? 'http://localhost:3333/graphql' : `http://${ MY_IP }:3333/graphql` })
   ])
 })
 
@@ -33,10 +36,9 @@ client.onResetStore(stateLink.writeDefaults)
 
 export default App = () => {
   return (
-    <ApolloProvider client={ client }>
-      <View style={ styles.container }>
-        <Text style={ styles.text }>Hi!</Text>
-      </View>
+    <ApolloProvider client={ client } style={ styles.container }>
+      <Root />
+      <Main />
     </ApolloProvider>
   )
 }
@@ -45,8 +47,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'flex-start',
-    alignItems: 'flex-start',
+    alignItems: 'stretch',
     backgroundColor: '#e2e2e2',
+    paddingTop: Platform.OS === 'ios' ? '20' : '0',
   },
   text: {
     backgroundColor: '#555',

@@ -58,3 +58,4 @@ buck-out/
 # Others
 package-lock.json
 *.code-workspace
+.env
