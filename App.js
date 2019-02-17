@@ -1,4 +1,5 @@
 import React from 'react'
+import { createStackNavigator } from 'react-navigation'
 import { MY_IP } from 'react-native-dotenv'
 import { Platform, StyleSheet } from 'react-native'
 import { ApolloClient } from 'apollo-client'
@@ -34,7 +35,7 @@ const client = new ApolloClient({
 // make client to rewrite the defaults every time the store resets
 client.onResetStore(stateLink.writeDefaults)
 
-export default App = () => {
+export const App = () => {
   return (
     <ApolloProvider client={ client } style={ styles.container }>
       <Root />
@@ -55,3 +56,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#555',
   }
 })
+
+const stackNavigator = createStackNavigator({
+  Home: Root,
+  About: Main,
+});
+
+export default { stackNavigator }

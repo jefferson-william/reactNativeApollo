@@ -4,6 +4,9 @@ import { graphql } from 'react-apollo'
 import gql from 'graphql-tag'
 
 export class Main extends Component {
+  static navigationOptions = {
+    title: 'Main',
+  }
   render () {
     const { data } = this.props
 
